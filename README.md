@@ -1,2 +1,2 @@
-# Competetive-Programming
-Competetive Programming and practice problems solutions
+# Competitive-Programming
+Competitive Programming and practice problem submissions for Codeforces
