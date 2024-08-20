@@ -8,18 +8,23 @@ using namespace std;
 
 const string YES = "YES";
 const string NO = "NO";
-bool solve(int n, const vector<int> & a, const vector<int> & b) {
+bool solve(const vector<int> & a, string & b) {
     // TODO: edit here
 }
 
 int main() {
     int n;
     cin >> n;
-    vector<int> a(n), b(n);
     REP (i, n) {
-        cin >> a[i] >> b[i];
+        int k;
+        cin >> k;
+        vector<int> a(k);
+        REP(j, k){
+            cin >> a[j];
+        }
+        string b;
+        cin >> b;
+        cout << (solve(a,b) ? "YES":"NO") << endl;
     }
-    auto ans = solve(n, a, b);
-    cout << (ans ? YES : NO) << endl;
     return 0;
 }
