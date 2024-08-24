@@ -3,7 +3,7 @@
 #include <algorithm>
 using namespace std;
 
-bool canMedianBe(const vector<long long> & a, const vector<long long> & b, long long k, long long x){
+bool canMedianBe(const vector<long long> & a, const vector<bool> & b, long long k, long long x){
     vector<long long> improvables;
     long long less_than_x = 0;
     for(long long i = 0; i < a.size(); ++i){
@@ -26,7 +26,7 @@ bool canMedianBe(const vector<long long> & a, const vector<long long> & b, long 
     return true;
 }
 
-void solve(vector<long long> a, vector<long long> b, long long k){
+void solve(vector<long long> a, vector<bool> b, long long k){
     // find index of max(a) and the index of max(a) that has b=1;
     long long max_a_idx = -1;
     long long max_a = 0;
@@ -91,7 +91,7 @@ int main(){
     cin >> t;
     for(int i = 0; i<t; i++){
         vector<long long> a;
-        vector<long long> b;
+        vector<bool> b;
         long long n;
         long long k;
         cin >> n;
