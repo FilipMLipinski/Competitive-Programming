@@ -5,9 +5,9 @@
 #include <iostream>
 
 using namespace std;
+typedef long long ll;
 
-bool solve() {
-    // TODO: edit here
+int solve() {
 }
 
 int main() {
