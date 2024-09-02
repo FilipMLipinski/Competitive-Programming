@@ -16,10 +16,18 @@ int maxcount(vector<int> & a){
     return res;
 }
 
-vector<int> addfreqs(vector<int> & a, vector<int> & b){
+vector<int> addfreqs(vector<int> & a, vector<int> b){
     vector<int> res;
     for(int i=0;i<a.size();i++){
         res.push_back(a[i]+b[i]);
+    }
+    return res;
+}
+
+vector<int> subfreqs(vector<int> & a, vector<int> b){
+    vector<int> res;
+    for(int i=0;i<a.size();i++){
+        res.push_back(a[i]-b[i]);
     }
     return res;
 }
@@ -33,103 +41,43 @@ void printV(vector<int> v){
 
 int solve(string s, int n) {
     if(n==1) return 1;
-    if(n%2 ==0){
-        vector<int> evens(26, 0);
-        vector<int> odds(26, 0);
-        for(int i=0;i<n;i++){
+    vector<vector<int>> odds;
+    vector<vector<int>> evens;
+    for(int i=0;i<n;i++){
+        if(i==0){
+            vector<int> o(26,0);
+            vector<int> e(26,0);
+            o[s[i]-'a']++;
+            odds.push_back(o);
+            evens.push_back(e);
+        }
+        else{
+            vector<int> o = odds[i-1];
+            vector<int> e = evens[i-1];
             if(i%2){
-                evens[s[i]-'a']++;
+                // i is odd = even position
+                e[s[i]-'a']++;
             }
-            else{
-                odds[s[i]-'a']++;
-            }
+            else o[s[i]-'a']++;
+            odds.push_back(o);
+            evens.push_back(e);
         }
-        int eve = 0;
-        int odd = 0;
-        for(int i=0;i<26;i++){
-            eve = max(eve, evens[i]);
-            odd = max(odd, odds[i]);
-        }
-        return n - eve - odd;
+    }
+    if(n%2==0){
+        return n-maxcount(odds[n-1])-maxcount(evens[n-1]);
     }
     else{
-        vector<vector<int>> eb;
-        vector<vector<int>> ef;
-        vector<vector<int>> ob;
-        vector<vector<int>> of;
-        for(int i=0;i<n;i++){
-            if(i==0){
-                vector<int> odds(26, 0);
-                vector<int> evens(26, 0);
-                odds[s[i]-'a']++;
-                ob.push_back(odds);
-                eb.push_back(evens);
-            }
-            else if(i%2==0){
-                vector<int> odds = ob[i-1];
-                vector<int> evens = eb[i-1];
-                odds[s[i]-'a']++;
-                ob.push_back(odds);
-                eb.push_back(evens);
-            }
-            else{
-                vector<int> odds = ob[i-1];
-                vector<int> evens = eb[i-1];
-                evens[s[i]-'a']++;
-                ob.push_back(odds);
-                eb.push_back(evens);
-            }
-        }
-        for(int i=n-1;i>=0;i--){
-            if(i==n-1){
-                vector<int> odds(26,0);
-                vector<int> evens(26,0);
-                evens[s[i]-'a']++;
-                of.push_back(odds);
-                ef.push_back(evens);
-            }
-            else{
-                vector<int> odds = of[n-i-2];
-                vector<int> evens = ef[n-i-2];
-                if(i%2){
-                    odds[s[i]-'a']++;
-                }
-                else{
-                    evens[s[i]-'a']++;
-                }
-                of.push_back(odds);
-                ef.push_back(evens);
-            }
-        }
         int minim = 3e5;
-        //cout << "hello"<<endl;
         for(int i=0;i<n;i++){
-            if(i==0){
-                // cout << "i: "<<i<<endl;
-                // printV(of[n-2]);
-                // printV(ef[n-2]);
-                minim = min(n - maxcount(of[n-2]) - maxcount(ef[n-2]), minim);
-            }
-            else if(i==n-1){
-                // cout << "i: " << i<<endl;
-                // printV(ob[n-2]);
-                // printV(eb[n-2]);
-                minim = min(n-maxcount(ob[n-2])-maxcount(eb[n-2]), minim);
+            if(i!=0){
+                vector<int> combo = addfreqs(odds[i-1], subfreqs(evens[n-1], evens[i]));
+                vector<int> combe = addfreqs(evens[i-1], subfreqs(odds[n-1], odds[i]));
+                minim = min(minim, n-maxcount(combo)-maxcount(combe));
             }
             else{
-                vector<int> o = addfreqs(ob[i-1], of[n-i-2]);
-                vector<int> e = addfreqs(eb[i-1], ef[n-i-2]);
-                // cout << "i: " << i<<endl;
-                // printV(ob[i-1]);
-                // printV(ef[n-i-2]);
-                // printV(eb[i-1]);
-                // printV(of[n-i-2]);
-                // printV(o);
-                // printV(e);
-                int podds = maxcount(o);
-                int pevens = maxcount(e);
-                // cout << "result: " << n-podds-pevens<<endl;
-                minim = min(n-podds-pevens,minim);
+                vector<int> combo = subfreqs(evens[n-1], evens[0]);
+                vector<int> combe = subfreqs(odds[n-1], odds[0]);
+                minim = min(minim, n-maxcount(combo)-maxcount(combe));
             }
         }
         return minim;
