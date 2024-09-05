@@ -8,33 +8,52 @@
 using namespace std;
 typedef long long ll;
 
-bool medlesseqthan(vector<int> & a, int x){
+bool ismedlessthan(vector<int> & p, int m, int x, int n){
+    // count elements in [0, m] + [x, x+m], [2x, 2x+m] ... [(n-1/x)x, (n-1/x)x + m]
     int count = 0;
-    for(int i=0; i<a.size();i++){
-        if(a[i]<=x) count++;
+    count += p[min(m, n-1)];
+    int i = 1;
+    while(i*x<=n){
+        count += p[min(n, x*i+m)] - p[x*i-1];
+        i++;
     }
-    return count > a.size()/2;
+    return count > n/2;
 }
 
-int solve(vector<int> a, int x) {
-    int n = a.size();
-    for(int i=0;i<n;i++){
-        a[i] = (a[i])%x;
+void printV(vector<int> v){
+    for(int i: v){
+        cout << i << " ";
     }
-    int s = -1;
-    int e = n;
-    // the median is in (s, e]
-    int i = 5;
-    while(s+1!=e){
-        int m = (s+e)/2;
-        if(medlesseqthan(a, m)){
-            e = m;
-        }
-        else{
-            s = m;
-        }
+    cout << endl;
+}
+
+string solve(vector<int> & p, vector<int> & q, int n) {
+    for(int i=1;i<=n;i++){
+        p[i]+=p[i-1];
     }
-    return e;
+    string ret;
+    vector<int> preq(n+1, -1);
+    for(int i=0;i<q.size();i++){
+        if(preq[q[i]]!=-1){
+            ret += to_string(preq[q[i]]) + " ";
+            continue;
+        }
+        int s = -1;
+        int e = q[i];
+        // the smallest median is in (s,e]
+        while(s+1!=e){
+            int m = (s+e)/2;
+            if(ismedlessthan(p,m,q[i],n)){
+                e = m;
+            }
+            else{
+                s = m;
+            }
+        }
+        preq[q[i]] = e;
+        ret += to_string(e) + " ";
+    }
+    return ret;
 }
 
 int main() {
@@ -43,20 +62,17 @@ int main() {
     while(t--){
         int n, q;
         cin >> n >> q;
-        vector<int> a(n);
+        vector<int> p(n+1, 0);
+        vector<int> qs(q);
         for(int i=0;i<n;i++){
-            cin >> a[i];
+            int a;
+            cin >> a;
+            p[a]++;
         }
-        vector<int> ret(q);        
         for(int i =0;i<q;i++){
-            int x;
-            cin >> x;
-            ret[i] = solve(a, x);
+            cin >> qs[i];
         }
-        for(int i=0;i<q;i++){
-            cout << ret[i] << " ";
-        }
-        cout << endl;
+        cout << solve(p, qs, n) << endl;
     }
     return 0;
 }
