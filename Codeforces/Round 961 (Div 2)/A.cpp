@@ -9,13 +9,11 @@ using namespace std;
 typedef long long ll;
 
 int solve(int n, int k) {
-    int count = 0;
     int d = n;
     if(k==0) return 0;
-    if(k<=n) return 1;
-    k-=(n);
-    count++;
-    d = n-1;
+    k-=d;
+    d-=1;
+    int count = 1;
     while(k>0){
         k-=d;
         count++;
@@ -33,7 +31,7 @@ int main() {
     while(t--){
         int n,k;
         cin >> n >> k;
-        cout << solve(n, k)<< endl;        
+        cout << solve(n,k) << endl;      
     }
     return 0;
 }
