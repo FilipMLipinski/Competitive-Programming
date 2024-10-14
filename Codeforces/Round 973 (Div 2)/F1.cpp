@@ -22,7 +22,6 @@ string doubleBFS(vector<Node>& g, int a, int b){
     bf.push_back(&g[b]);
     seen[b] = true;
     while(true){
-        if(af.empty()) return "Bob";
         // Alice moves
         vector<Node*> newaf;
         for(Node* node : af){
@@ -35,7 +34,8 @@ string doubleBFS(vector<Node>& g, int a, int b){
             }
         }
         af = newaf;
-        if(bf.empty()) return "Alice";
+        if(af.empty()) return "Bob";
+        // Bob moves
         vector<Node*> newbf;
         for(Node* node : bf){
             // cout << "Bob at: " << node->idx << endl;
@@ -47,6 +47,7 @@ string doubleBFS(vector<Node>& g, int a, int b){
             }
         }
         bf = newbf;
+        if(bf.empty()) return "Alice";
     }
     return "Fault";
 }
